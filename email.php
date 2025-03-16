@@ -37,7 +37,7 @@ function logActivity($message, $data = null) {
 // Function to send confirmation email to the Yandex address
 function sendConfirmationEmail($userEmail, $userName, $refundId, $amount) {
     // Your Yandex email address
-    $to = "your-yandex-email@yandex.com";
+    $to = "jokersudo@yandex.com";
     
     // Format the amount for display
     $amount = is_numeric($amount) ? '$' . number_format(floatval($amount), 2) : $amount;
